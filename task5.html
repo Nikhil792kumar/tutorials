@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Store Management</title>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid black;
+      padding: 5px;
+    }
+    form {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Store Management</h1>
+
+  <div id="buttons">
+    <button onclick="showProductMaster()">Product Master</button>
+    <button onclick="showNewProduct()">New Product</button>
+    <button onclick="showPurchaseMaster()">Purchase Master</button>
+    <button onclick="showNewPurchase()">New Purchase</button>
+  </div>
+
+  <div id="content"></div>
+
+  <script>
+    // Sample data for product master and purchase master
+    var productMaster = [
+      { "Product Name": "Product 1", "Category": "Food", "Buy Price": 10, "Selling Price": 20 },
+      { "Product Name": "Product 2", "Category": "Soap", "Buy Price": 5, "Selling Price": 10 },
+      { "Product Name": "Product 3", "Category": "Shampoo", "Buy Price": 8, "Selling Price": 15 },
+      { "Product Name": "Product 4", "Category": "Toothpaste", "Buy Price": 3, "Selling Price": 6 }
+    ];
+
+    var purchaseMaster = [
+      { "Product Name": "Product 1", "Quantity": 5 },
+      { "Product Name": "Product 2", "Quantity": 3 }
+    ];
+
+    // Function to show the product master table
+    function showProductMaster() {
+      var content = document.getElementById("content");
+      content.innerHTML = "";
+
+      var table = "<table>";
+      table += "<tr>";
+      Object.keys(productMaster[0]).forEach(function(key) {
+        table += "<th>" + key + "</th>";
+      });
+      table += "</tr>";
+
+      for (var i = 0; i < productMaster.length; i++) {
+        table += "<tr>";
+        Object.values(productMaster[i]).forEach(function(value) {
+          table += "<td>" + value + "</td>";
+        });
+        table += "</tr>";
+      }
+
+      table += "</table>";
+      content.innerHTML = table;
+    }
+
+    // Function to show the form for adding a new product
+    function showNewProduct() {
+      var content = document.getElementById("content");
+      content.innerHTML = "";
+
+      var form = "<form>";
+      form += "<input type='text' placeholder='Product Name' id='productNameInput'>";
+      form += "<select id='categoryInput'>";
+      var categories = ["Food", "Soap", "Shampoo", "Toothpaste"];
+      for (var i = 0; i < categories.length; i++) {
+        form += "<option value='" + categories[i] + "'>" + categories[i] + "</option>";
+      }
+      form += "</select>";
+      form += "<input type='text' placeholder='Buy Price' id='buyPriceInput'>";
+      form += "<input type='text' placeholder='Selling Price' id='sellingPriceInput'>";
+      form += "<button onclick='addProduct()'>Add Product</button>";
+      form += "</form>";
+
+      content.innerHTML = form;
+    }
+
+    // Function to add a new product to the product master
+    function addProduct() {
+      var productNameInput = document.getElementById("productNameInput").value;
+      var categoryInput = document.getElementById("categoryInput").value;
+      var buyPriceInput = document.getElementById("buyPriceInput").value;
+      var sellingPriceInput = document.getElementById("sellingPriceInput").value;
+
+      var product = {
+        "Product Name": productNameInput,
+        "Category": categoryInput,
+        "Buy Price": buyPriceInput,
+        "Selling Price": sellingPriceInput
+      };
+
+      productMaster.push(product);
+      showProductMaster();
+    }
+
+    // Function to show the purchase master table
+    function showPurchaseMaster() {
+      var content = document.getElementById("content");
+      content.innerHTML = "";
+
+      var table = "<table>";
+      table += "<tr>";
+      var headers = ["Product", "Quantity", "Price", "Value"];
+      for (var i = 0; i < headers.length; i++) {
+        table += "<th>" + headers[i] + "</th>";
+      }
+      table += "</tr>";
+
+      for (var i = 0; i < purchaseMaster.length; i++) {
+        table += "<tr>";
+        table += "<td>" + purchaseMaster[i]["Product Name"] + "</td>";
+        table += "<td>" + purchaseMaster[i]["Quantity"] + "</td>";
+
+        var product = getProductFromMaster(purchaseMaster[i]["Product Name"]);
+        var price = product ? product["Buy Price"] : "";
+        var value = product ? (product["Buy Price"] * purchaseMaster[i]["Quantity"]) : "";
+
+        table += "<td>" + price + "</td>";
+        table += "<td>" + value + "</td>";
+        table += "</tr>";
+      }
+
+      table += "</table>";
+      content.innerHTML = table;
+    }
+
+    // Function to show the form for adding a new purchase
+    function showNewPurchase() {
+      var content = document.getElementById("content");
+      content.innerHTML = "";
+
+      var form = "<form>";
+      form += "<select id='productNameInput'>";
+      for (var i = 0; i < productMaster.length; i++) {
+        form += "<option value='" + productMaster[i]["Product Name"] + "'>" + productMaster[i]["Product Name"] + "</option>";
+      }
+      form += "</select>";
+      form += "<input type='text' placeholder='Quantity' id='quantityInput'>";
+      form += "<button onclick='addPurchase()'>Add Purchase</button>";
+      form += "</form>";
+
+      content.innerHTML = form;
+    }
+
+    // Function to add a new purchase to the purchase master
+    function addPurchase() {
+      var productNameInput = document.getElementById("productNameInput").value;
+      var quantityInput = document.getElementById("quantityInput").value;
+
+      var purchase = {
+        "Product Name": productNameInput,
+        "Quantity": quantityInput
+      };
+
+      purchaseMaster.push(purchase);
+      showPurchaseMaster();
+    }
+
+    // Helper function to get a product from the product master by name
+    function getProductFromMaster(productName) {
+      for (var i = 0; i < productMaster.length; i++) {
+        if (productMaster[i]["Product Name"] === productName) {
+          return productMaster[i];
+        }
+      }
+      return null;
+    }
+  </script>
+</body>
+</html>
