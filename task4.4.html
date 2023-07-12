@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Product Offers</title>
+  <style>
+    .product {
+      margin-bottom: 10px;
+      background-color: blue;
+      padding: 10px;
+      color: white;
+    }
+    .offers {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Product Details</h1>
+  <div id="products"></div>
+  
+  <script>
+    // Sample JSON data
+    var products = [
+      {"name":"Maggi","price":25, "offers":["Citi Credit Cards","ICICI Card"]},
+      {"name":"Perk","price":10, "offers":["Axis Credit Cards","PayTM"]},
+      {"name":"Gems","price":15, "offers":["SBI Card","PhonePe","PayTM"]},
+      {"name":"Lindt","price":90, "offers":[]},
+      {"name":"Nutties","price":12, "offers":["Citi Credit Cards "]},
+      {"name":"Pepsi","price":15, "offers":["PhonePe","PayTM"]},
+      {"name":"Coca Cola","price":15, "offers":["SBI Card"]},
+      {"name":"Dairy Milk","price":10, "offers":[]}
+    ];
+  
+    var activeOfferIndex = -1;
+  
+    // Function to toggle offers visibility
+    function toggleOffers(index) {
+      var offersDiv = document.getElementById("offers-" + index);
+      var showButton = document.getElementById("show-button-" + index);
+      var productDiv = document.getElementById("product-" + index);
+  
+      if (activeOfferIndex === index) {
+        offersDiv.style.display = "none";
+        showButton.textContent = "Show Offers";
+        productDiv.style.backgroundColor = "blue";
+        activeOfferIndex = -1;
+      } else {
+        // Hide offers of previously active product if any
+        var activeOffersDiv = document.getElementById("offers-" + activeOfferIndex);
+        var activeShowButton = document.getElementById("show-button-" + activeOfferIndex);
+        var activeProductDiv = document.getElementById("product-" + activeOfferIndex);
+        if (activeOffersDiv) {
+          activeOffersDiv.style.display = "none";
+          activeShowButton.textContent = "Show Offers";
+          activeProductDiv.style.backgroundColor = "blue";
+        }
+  
+        offersDiv.style.display = "block";
+        showButton.textContent = "Hide Offers";
+        productDiv.style.backgroundColor = "pink";
+        activeOfferIndex = index;
+      }
+    }
+  
+    // Render products
+    var productsDiv = document.getElementById("products");
+    var productsHTML = "";
+    for (var i = 0; i < products.length; i++) {
+      var product = products[i];
+  
+      var offersHTML = "";
+      for (var j = 0; j < product.offers.length; j++) {
+        var offer = product.offers[j];
+        offersHTML += "<span>" + offer + "</span><br>";
+      }
+  
+      var showButtonHTML =
+        "<button id='show-button-" + i + "' onclick='toggleOffers(" + i + ")'>Show Offers</button>";
+  
+      productsHTML +=
+        "<div class='product' id='product-" + i + "'>" +
+        "<div>Name: " + product.name + "</div>" +
+        "<div>Price: " + product.price + "</div>" +
+        "<div class='offers' id='offers-" + i + "' style='display: none;'>" +
+        offersHTML +
+        "</div>" +
+        showButtonHTML +
+        "</div>";
+    }
+  
+    productsDiv.innerHTML = productsHTML;
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
