@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    th {
+      cursor: pointer;
+    }
+
+    .red {
+      background-color: #ffcccc;
+    }
+
+    .grey {
+      background-color: #dddddd;
+    }
+
+    .green {
+      background-color: #ccffcc;
+    }
+
+    .button-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .button-row button {
+      margin-left: 10px;
+    }
+
+    .add-member-form {
+      display: none;
+    }
+
+    .add-member-form label {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="button-row">
+      <p><b>New Weight Between : </b></p>
+      <label for="filterMin"></label>
+      <select id="filterMin">
+        <option value="">Select min weight</option>
+
+      </select>
+      
+      <label for="filterMax">:</label>
+      <select id="filterMax">
+        <option value="">Select max weight</option>
+        
+      </select>
+     </div>
+      <button onclick="filterTable()">Filter</button>
+      <button onclick="clearFilter()">Clear Filter</button>
+      <button onclick="toggleAddMemberForm()">Add New Member</button>
+      <label for="filterMin"></label>
+    
+  </div>
+  <table id="data-table">
+    <thead>
+      <tr>
+        <th onclick="sortTable(0)">Name</th>
+        <th onclick="sortTable(1)">Old Weight</th>
+        <th onclick="sortTable(2)">New Weight</th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+    </tbody>
+  </table>
+
+  <div id="newMemberForm" class="add-member-form">
+    <label for="nameInput">Name:</label>
+    <input type="text" id="nameInput" placeholder="Enter Name">
+    <label for="oldWeightSelect">Old Weight:</label>
+    <select id="oldWeightSelect">
+      <option value="">Select Old Weight</option>
+      
+    </select>
+    <label for="newWeightSelect">New Weight:</label>
+    <select id="newWeightSelect">
+      <option value="">Select New Weight</option>
+     
+    </select>
+    <button onclick="addMember()">Add</button>
+    <button onclick="cancelAdd()">Cancel</button>
+  </div>
+
+  <script>
+      var dropdown = document.getElementById("filterMin");
+
+for (var i = 40; i <= 100; i++) {
+    var option = document.createElement("option");
+    option.text = i;
+    option.value = i;
+    dropdown.appendChild(option);
+}
+var dropdown = document.getElementById("filterMax");
+
+for (var i = 40; i <= 100; i++) {
+    var option = document.createElement("option");
+    option.text = i;
+    option.value = i;
+    dropdown.appendChild(option);
+}
+var dropdown = document.getElementById("oldWeightSelect");
+
+for (var i = 40; i <= 100; i++) {
+    var option = document.createElement("option");
+    option.text = i;
+    option.value = i;
+    dropdown.appendChild(option);
+}
+var dropdown = document.getElementById("newWeightSelect");
+
+for (var i = 40; i <= 100; i++) {
+    var option = document.createElement("option");
+    option.text = i;
+    option.value = i;
+    dropdown.appendChild(option);
+}
+    var jsonArray = [
+      { "name": "Bob", "oldWeight": 50, "newWeight": 68 },
+      { "name": "Steve", "oldWeight": 60, "newWeight": 58 },
+      { "name": "Mark", "oldWeight": 45, "newWeight": 45 },
+      { "name": "Maxwell", "oldWeight": 70, "newWeight": 55 },
+      { "name": "Broad", "oldWeight": 50, "newWeight": 55 }
+    ];
+
+    var tableBody = document.getElementById("table-body");
+    var addMemberForm = document.getElementById("newMemberForm");
+
+    function initTable() {
+      for (var i = 0; i < jsonArray.length; i++) {
+        var row = document.createElement("tr");
+        var nameCell = document.createElement("td");
+        var oldWeightCell = document.createElement("td");
+        var newWeightCell = document.createElement("td");
+
+        nameCell.textContent = jsonArray[i].name;
+        oldWeightCell.textContent = jsonArray[i].oldWeight;
+        newWeightCell.textContent = jsonArray[i].newWeight;
+
+        row.appendChild(nameCell);
+        row.appendChild(oldWeightCell);
+        row.appendChild(newWeightCell);
+
+        tableBody.appendChild(row);
+      }
+    }
+
+    function sortTable(column) {
+      var rows, switching, i, x, y, shouldSwitch;
+      var table = document.getElementById("data-table");
+      switching = true;
+
+      while (switching) {
+        switching = false;
+        rows = table.getElementsByTagName("tr");
+
+        for (i = 1; i < rows.length - 1; i++) {
+          shouldSwitch = false;
+          x = rows[i].getElementsByTagName("td")[column];
+          y = rows[i + 1].getElementsByTagName("td")[column];
+
+          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+            shouldSwitch = true;
+            break;
+          }
+        }
+
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+        }
+      }
+    }
+
+    function filterTable() {
+      var minWeight = document.getElementById("filterMin").value;
+      var maxWeight = document.getElementById("filterMax").value;
+      var rows = tableBody.getElementsByTagName("tr");
+
+      for (var i = 0; i < rows.length; i++) {
+        var weight = parseInt(rows[i].getElementsByTagName("td")[2].textContent);
+
+        if ((!minWeight || weight >= minWeight) && (!maxWeight || weight <= maxWeight)) {
+          rows[i].style.display = "";
+        } else {
+          rows[i].style.display = "none";
+        }
+      }
+    }
+
+    function clearFilter() {
+      var rows = tableBody.getElementsByTagName("tr");
+
+      for (var i = 0; i < rows.length; i++) {
+        rows[i].style.display = "";
+      }
+    }
+
+    function applyColorCoding() {
+      var rows = tableBody.getElementsByTagName("tr");
+
+      for (var i = 0; i < rows.length; i++) {
+        var oldWeight = parseInt(rows[i].getElementsByTagName("td")[1].textContent);
+        var newWeight = parseInt(rows[i].getElementsByTagName("td")[2].textContent);
+
+        if (newWeight > oldWeight) {
+          rows[i].className = "red";
+        } else if (newWeight === oldWeight) {
+          rows[i].className = "grey";
+        } else {
+          rows[i].className = "green";
+        }
+      }
+    }
+
+    function toggleAddMemberForm() {
+      addMemberForm.style.display = addMemberForm.style.display === "none" ? "block" : "none";
+    }
+
+    function addMember() {
+      var nameInput = document.getElementById("nameInput").value;
+      var oldWeightSelect = document.getElementById("oldWeightSelect");
+      var newWeightSelect = document.getElementById("newWeightSelect");
+
+      if (nameInput && oldWeightSelect.value && newWeightSelect.value) {
+        var newRow = document.createElement("tr");
+        var nameCell = document.createElement("td");
+        var oldWeightCell = document.createElement("td");
+        var newWeightCell = document.createElement("td");
+
+        nameCell.textContent = nameInput;
+        oldWeightCell.textContent = oldWeightSelect.value;
+        newWeightCell.textContent = newWeightSelect.value;
+
+        newRow.appendChild(nameCell);
+        newRow.appendChild(oldWeightCell);
+        newRow.appendChild(newWeightCell);
+
+        tableBody.appendChild(newRow);
+
+        applyColorCoding();
+
+        document.getElementById("nameInput").value = "";
+        oldWeightSelect.value = "";
+        newWeightSelect.value = "";
+
+        toggleAddMemberForm();
+      }
+    }
+
+    function cancelAdd() {
+      document.getElementById("nameInput").value = "";
+      document.getElementById("oldWeightSelect").value = "";
+      document.getElementById("newWeightSelect").value = "";
+
+      toggleAddMemberForm();
+    }
+
+    initTable();
+    applyColorCoding();
+  </script>
+</body>
+</html>
+
+
+
