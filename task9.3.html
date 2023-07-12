@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Technical Skills</title>
+  <style>
+    .skill-level {
+      display: none;
+    }
+    .project-link {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h2>Technical Skills</h2>
+  
+  <form id="skillsForm" onsubmit="return submitForm()">
+   
+    
+    <label for="skillsSelection">Technical Skills:</label>
+    <br>
+    <div id="skillsSelection"></div>
+    <br>
+    
+   
+  </form>
+
+  <script>
+    var technologies = ["Javascript", "Python", "Java", "Android", "iOS"];
+
+    function generateCheckboxes() {
+      var skillsSelection = document.getElementById("skillsSelection");
+      skillsSelection.innerHTML = "";
+
+      var checkboxHTML = "";
+      for (var i = 0; i < technologies.length; i++) {
+        var technology = technologies[i];
+
+        checkboxHTML += '<label><input type="checkbox" name="skills" value="' + technology + '" onclick="toggleSkillLevel(this)">' + technology + '</label><br>';
+        checkboxHTML += '<div id="skillLevel-' + technology + '" class="skill-level">';
+        checkboxHTML += '<label><b>What\'s your level:</b></label> ';
+        checkboxHTML += '<label for="skillLevel-' + technology + '-beginner"><input type="radio" id="skillLevel-' + technology + '-beginner" name="skillLevel-' + technology + '" value="Beginner" onclick="showProjectLink(\'' + technology + '\')"> Beginner</label> ';
+        checkboxHTML += '<label for="skillLevel-' + technology + '-intermediate"><input type="radio" id="skillLevel-' + technology + '-intermediate" name="skillLevel-' + technology + '" value="Intermediate" onclick="showProjectLink(\'' + technology + '\')"> Intermediate</label> ';
+        checkboxHTML += '<label for="skillLevel-' + technology + '-good"><input type="radio" id="skillLevel-' + technology + '-good" name="skillLevel-' + technology + '" value="Good" onclick="showProjectLink(\'' + technology + '\')"> Good</label> ';
+        checkboxHTML += '<label for="skillLevel-' + technology + '-excellent"><input type="radio" id="skillLevel-' + technology + '-excellent" name="skillLevel-' + technology + '" value="Excellent" onclick="showProjectLink(\'' + technology + '\')"> Excellent</label><br>';
+        checkboxHTML += '<div id="projectLinkDiv-' + technology + '" class="project-link">';
+        checkboxHTML += '<label><b>Share the link of your project:</b></label>';
+        checkboxHTML += '<input type="text" id="projectLink-' + technology + '" placeholder="Enter project link"><br>';
+        checkboxHTML += '</div>';
+        checkboxHTML += '</div>';
+      }
+
+      skillsSelection.innerHTML = checkboxHTML;
+    }
+
+    function toggleSkillLevel(checkbox) {
+      var technology = checkbox.value;
+      var skillLevelDiv = document.getElementById("skillLevel-" + technology);
+      var projectLinkDiv = document.getElementById("projectLinkDiv-" + technology);
+
+      if (checkbox.checked) {
+        skillLevelDiv.style.display = "block";
+        var selectedSkillLevel = getSelectedSkillLevel(technology);
+
+        if (selectedSkillLevel === 'Good' || selectedSkillLevel === 'Excellent') {
+          projectLinkDiv.style.display = "block";
+        }
+      } else {
+        skillLevelDiv.style.display = "none";
+        projectLinkDiv.style.display = "none";
+      }
+    }
+
+    function showProjectLink(technology) {
+      var projectLinkDiv = document.getElementById("projectLinkDiv-" + technology);
+      var selectedSkillLevel = getSelectedSkillLevel(technology);
+
+      if (selectedSkillLevel === 'Good' || selectedSkillLevel === 'Excellent') {
+        projectLinkDiv.style.display = "block";
+      } else {
+        projectLinkDiv.style.display = "none";
+      }
+    }
+
+    function getSelectedSkillLevel(technology) {
+      var skillLevelRadios = document.getElementsByName("skillLevel-" + technology);
+
+      for (var i = 0; i < skillLevelRadios.length; i++) {
+        if (skillLevelRadios[i].checked) {
+          return skillLevelRadios[i].value;
+        }
+      }
+
+      return '';
+    }
+
+    function submitForm() {
+      var nameInput = document.getElementById("nameInput");
+      var skillsInputs = document.getElementsByName("skills");
+      var student = {
+        name: nameInput.value,
+        skills: [],
+      };
+
+      for (var i = 0; i < skillsInputs.length; i++) {
+        var checkbox = skillsInputs[i];
+        if (checkbox.checked) {
+          var technology = checkbox.value;
+          var skillLevel = getSelectedSkillLevel(technology);
+          var projectLink = '';
+
+          if (skillLevel === 'Good' || skillLevel === 'Excellent') {
+            var projectLinkInput = document.getElementById("projectLink-" + technology);
+            projectLink = projectLinkInput.value;
+          }
+
+          student.skills.push({
+            technology: technology,
+            skillLevel: skillLevel,
+            projectLink: projectLink,
+          });
+        }
+      }
+
+      console.log(student);
+
+      nameInput.value = "";
+      for (var i = 0; i < skillsInputs.length; i++) {
+        skillsInputs[i].checked = false;
+        var technology = skillsInputs[i].value;
+        var skillLevelDiv = document.getElementById("skillLevel-" + technology);
+        var projectLinkDiv = document.getElementById("projectLinkDiv-" + technology);
+        skillLevelDiv.style.display = "none";
+        projectLinkDiv.style.display = "none";
+      }
+
+      return false; // Prevent form submission
+    }
+
+    generateCheckboxes();
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
